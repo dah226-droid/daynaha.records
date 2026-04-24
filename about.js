@@ -1,23 +1,38 @@
 const stage = document.getElementById('vinyl-stage');
 
+/** Users cannot scroll past this Y offset on the About page. */
+const MAX_ABOUT_SCROLL_Y = 1200;
+
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
+function capAboutScroll() {
+  const y = window.scrollY || window.pageYOffset || 0;
+  if (y > MAX_ABOUT_SCROLL_Y) {
+    window.scrollTo(0, MAX_ABOUT_SCROLL_Y);
+  }
+}
+
 function animateAboutHero() {
+  capAboutScroll();
   if (!stage) return;
 
   const viewport = window.innerHeight || 1;
-  const maxScroll = Math.max(
+  const naturalMaxScroll = Math.max(
     document.documentElement.scrollHeight - viewport,
-    1
+    0
   );
-  const scrollY = window.scrollY || window.pageYOffset || 0;
+  const maxScroll = Math.min(naturalMaxScroll, MAX_ABOUT_SCROLL_Y);
+  const scrollY = Math.min(
+    window.scrollY || window.pageYOffset || 0,
+    MAX_ABOUT_SCROLL_Y
+  );
   const stageTop = stage.offsetTop;
 
-  // Start once the hero is near view, then keep animating until page bottom.
+  // Start once the hero is near view, then keep animating until capped scroll end.
   const start = Math.max(stageTop - viewport * 0.7, 0);
-  const end = maxScroll;
+  const end = Math.max(maxScroll, start + 1);
   const progress = clamp((scrollY - start) / Math.max(end - start, 1), 0, 1);
 
   // about1 -> about2 style transition
