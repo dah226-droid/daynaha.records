@@ -346,47 +346,56 @@ h2 {
 
 .user-research-band {
   margin-top: clamp(28px, 3vw, 44px);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .user-research-band .band-inner {
-  padding-bottom: 0;
+  padding-top: clamp(8px, 1.5vw, 16px);
+  padding-bottom: clamp(17px, 3vw, 30px);
 }
 
 .user-research-title {
   color: #ffffff;
   font-family: "Alegreya Sans SC", sans-serif;
+  margin-bottom: clamp(6px, 1vw, 10px);
 }
 
-.user-research-grid {
-  grid-template-columns: minmax(260px, 0.78fr) minmax(360px, 1.22fr);
-  column-gap: clamp(54px, 6vw, 90px);
+.progress-carousel {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.user-research-copy {
+.progress-carousel-track {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-  max-width: 420px;
+  gap: clamp(5px, 1.2vw, 10px);
 }
 
-.overview-grid .user-research-text {
-  margin-top: 0;
-  margin-left: 0;
+.progress-carousel-image {
+  flex: 0 0 min(320px, 62vw);
+  width: min(320px, 62vw);
+  height: auto;
+  display: block;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  border-radius: 5px;
+  background: #ffffff;
+  scroll-snap-align: center;
+}
+
+.progress-caption {
+  margin-top: 14px;
+  text-align: center;
   color: #ffffff;
   font-family: "Inter", sans-serif;
-  font-size: clamp(12px, 1.2vw, 17px);
-  line-height: 1.45;
+  font-style: italic;
+  font-size: 200;
 }
 
-.user-research-image {
-  width: 100%;
-  max-width: 620px;
-  justify-self: end;
-  align-self: start;
-  display: block;
-  transform: translateY(-40px);
+.progress-carousel::-webkit-scrollbar {
+  display: none;
 }
 
 .content-section {
@@ -399,6 +408,8 @@ h2 {
 }
 
 .problem-title {
+  position: relative;
+  left: clamp(-58px, -3.8vw, -24px);
   font-family: "Alegreya Sans SC", sans-serif;
   font-size: clamp(18px, 1.6vw, 25px);
   letter-spacing: 0.09em;
@@ -464,7 +475,8 @@ h2 {
 }
 
 .framed {
-  width: min(860px, 82%);
+  width: fit-content;
+  max-width: min(620px, calc(100vw - 40px));
   margin: 0 auto;
   padding: 10px;
   background: var(--bg);
@@ -473,7 +485,10 @@ h2 {
 }
 
 .framed .full-image {
-  width: 100%;
+  display: block;
+  width: min(620px, 100%);
+  max-width: 100%;
+  height: auto;
 }
 
 .final-deliverable-section {
@@ -481,6 +496,9 @@ h2 {
 }
 
 .final-deliverable-section h2 {
+  position: relative;
+  left: clamp(-132px, -5.9vw, -92px);
+  margin-top: clamp(42px, 5vw, 72px);
   margin-bottom: 40px;
   color: var(--purple);
 }
@@ -527,6 +545,8 @@ h2 {
 }
 
 .key-takeaways-title {
+  position: relative;
+  left: clamp(-58px, -3.8vw, -24px);
   font-family: "Alegreya Sans SC", sans-serif;
   margin-bottom: 12px;
   color: var(--purple);
@@ -616,8 +636,9 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .user-research-image {
-    justify-self: center;
+  .progress-carousel-image {
+    flex-basis: min(340px, 84vw);
+    width: min(340px, 84vw);
   }
 
   .project-title-row {

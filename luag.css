@@ -405,6 +405,12 @@ h2 {
   color: var(--purple);
 }
 
+@media (min-width: 1200px) {
+  .problem-title {
+    margin-left: -55px;
+  }
+}
+
 .content-section .problem-text {
   margin-top: 14px;
   color: #202020;

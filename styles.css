@@ -198,7 +198,7 @@ body {
 .role-badges {
   position: absolute;
   left: clamp(-265px, -20vw, -165px);
-  top: clamp(70px, 11vw, 165px);
+  top: clamp(15px, 6vw, 95px);
   display: flex;
   flex-direction: column;
   gap: clamp(9px, 5vw, 73px);
