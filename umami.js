@@ -128,8 +128,9 @@ function getOtherRecordsStopScrollY() {
 })();
 
 (function setupSideTocActiveState() {
+  const toc = document.querySelector('.side-toc');
   const tocLinks = Array.from(document.querySelectorAll('.side-toc .toc-link'));
-  if (!tocLinks.length) return;
+  if (!toc || !tocLinks.length) return;
   const purpleRegions = Array.from(document.querySelectorAll('.band, .other-records-section'));
 
   const linksById = new Map();
@@ -153,6 +154,7 @@ function getOtherRecordsStopScrollY() {
   }
 
   function updateTocContrast() {
+    let hasPurpleOverlap = false;
     tocLinks.forEach((link) => {
       const rect = link.getBoundingClientRect();
       const x = rect.left + 4;
@@ -166,8 +168,10 @@ function getOtherRecordsStopScrollY() {
           y <= regionRect.bottom
         );
       });
+      if (overlapsPurple) hasPurpleOverlap = true;
       link.classList.toggle('on-purple', overlapsPurple);
     });
+    toc.classList.toggle('on-purple', hasPurpleOverlap);
   }
 
   let contrastRafId = null;

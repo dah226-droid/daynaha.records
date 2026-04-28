@@ -128,10 +128,11 @@ function getOtherRecordsStopScrollY() {
 })();
 
 (function setupSideTocActiveState() {
+  const toc = document.querySelector('.side-toc');
   const tocLinks = Array.from(document.querySelectorAll('.side-toc .toc-link'));
-  if (!tocLinks.length) return;
-  const purpleRegions = Array.from(document.querySelectorAll('.band, .other-records-section'));
+  if (!toc || !tocLinks.length) return;
 
+  const purpleRegions = Array.from(document.querySelectorAll('.band, .other-records-section'));
   const linksById = new Map();
   const sections = [];
 
@@ -153,21 +154,19 @@ function getOtherRecordsStopScrollY() {
   }
 
   function updateTocContrast() {
+    let hasPurpleOverlap = false;
     tocLinks.forEach((link) => {
       const rect = link.getBoundingClientRect();
       const x = rect.left + 4;
       const y = rect.top + rect.height / 2;
       const overlapsPurple = purpleRegions.some((region) => {
         const regionRect = region.getBoundingClientRect();
-        return (
-          x >= regionRect.left &&
-          x <= regionRect.right &&
-          y >= regionRect.top &&
-          y <= regionRect.bottom
-        );
+        return x >= regionRect.left && x <= regionRect.right && y >= regionRect.top && y <= regionRect.bottom;
       });
+      if (overlapsPurple) hasPurpleOverlap = true;
       link.classList.toggle('on-purple', overlapsPurple);
     });
+    toc.classList.toggle('on-purple', hasPurpleOverlap);
   }
 
   let contrastRafId = null;
@@ -195,7 +194,7 @@ function getOtherRecordsStopScrollY() {
   );
 
   sections.forEach((section) => observer.observe(section));
-  setActiveLink('introduction');
+  setActiveLink(sections[0].id);
   updateTocContrast();
   window.addEventListener('scroll', requestContrastUpdate, { passive: true });
   window.addEventListener('resize', requestContrastUpdate);

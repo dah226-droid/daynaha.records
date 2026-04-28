@@ -111,6 +111,17 @@ html {
   gap: clamp(12px, 1.2vw, 16px);
 }
 
+.side-toc::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.14);
+  z-index: 0;
+}
+
 .toc-link {
   position: relative;
   padding-left: 20px;
@@ -135,21 +146,11 @@ html {
   border-radius: 50%;
   transform: translateY(-50%);
   background: #ffffff;
-  z-index: 2;
 }
 
-.toc-link::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: calc(50% + 4px);
-  width: 1px;
-  height: calc(100% + clamp(12px, 1.2vw, 16px) - 8px);
-  background: rgba(0, 0, 0, 0.14);
-  z-index: 0;
-}
-
-.toc-link:last-child::after {
+.toc-link::after,
+.toc-link:last-child::after,
+.toc-link.on-purple::after {
   display: none;
 }
 
@@ -170,10 +171,10 @@ html {
 
 .toc-link.on-purple::before {
   border-color: rgba(255, 255, 255, 0.52);
-  background: rgba(255, 255, 255, 0.16);
+  background: #a276a6;
 }
 
-.toc-link.on-purple::after {
+.side-toc.on-purple::before {
   background: rgba(255, 255, 255, 0.26);
 }
 
@@ -188,7 +189,13 @@ html {
   background: #d8c6da;
 }
 
-.luag-page section[id] {
+#introduction,
+#overview,
+#problem,
+#research,
+#process,
+#final-deliverable,
+#key-takeaways {
   scroll-margin-top: calc(var(--top-nav-slot) + 16px);
 }
 
@@ -384,7 +391,7 @@ h2 {
 
 .problem-title {
   position: relative;
-  left: clamp(-55px, -3.1vw, -25px);
+  left: clamp(-25px, -3vw, -9px);
   font-family: "Alegreya Sans SC", sans-serif;
   font-size: clamp(18px, 1.6vw, 25px);
   letter-spacing: 0.09em;
@@ -457,7 +464,7 @@ h2 {
 .process-title {
   position: relative;
   left: clamp(-44px, -3.1vw, -16px);
-  margin-top: clamp(44px, 5vw, 72px);
+  margin-top: clamp(28px, 3vw, 42px);
   margin-bottom: 20;
   color: var(--purple);
   font-family: "Alegreya Sans SC", sans-serif;
@@ -481,26 +488,25 @@ h2 {
 .final-deliverable-section {
   width: min(1100px, calc(100vw - 40px));
   margin-bottom: clamp(34px, 5vw, 70px);
-  transform: none;
 }
 
 .final-deliverable-section h2 {
   position: relative;
-  left: clamp(5px, -2vw, 5px);
-  margin-top: clamp(44px, 5vw, 72px);
+  left: clamp(-90px, -6vw, -45px);
+  margin-top: clamp(28px, 3vw, 42px);
   margin-bottom: 40px;
   color: var(--purple);
 }
 
 .final-deliverable-section .full-image {
-  width: min(650px, 82%);
+  width: min(700px, 82%);
   margin: 0 auto;
 }
 
 .content-section .game-structure-text {
   margin-top: 24px;
-  max-width: 900px;
-  margin-left: auto;
+  max-width: 1100px;
+  margin-left: 120px;
   margin-right: auto;
   color: #000000;
   font-family: "Inter", sans-serif;
@@ -555,7 +561,7 @@ h2 {
 
 .key-takeaways-title {
   position: relative;
-  left: clamp(-44px, -2.9vw, -10px);
+  left: clamp(-36px, -2.5vw, -8px);
   font-family: "Alegreya Sans SC", sans-serif;
   margin-bottom: 12px;
   color: var(--purple);
@@ -569,7 +575,7 @@ h2 {
   margin-right: auto;
   color:var(--purple);
   font-family: "Inter", sans-serif;
-  font-size: clamp(-5px, -1.8vw, 3px);
+  font-size: clamp(12px, 1.08vw, 16px);
   line-height: 1.45;
 }
 
@@ -652,9 +658,5 @@ h2 {
   .project-title-row {
     align-items: center;
     gap: 8px;
-  }
-
-  .final-deliverable-section {
-    transform: none;
   }
 }

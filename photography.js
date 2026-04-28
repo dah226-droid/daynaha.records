@@ -121,3 +121,119 @@ function getOtherRecordsStopScrollY() {
   window.addEventListener('resize', clampScrollToBoundary);
   clampScrollToBoundary();
 })();
+
+(function setupBackToTopRewind() {
+  const backLink = document.querySelector('.back-link');
+  if (!backLink) return;
+
+  let rewindRafId = null;
+
+  function animateRewindToTop() {
+    if (rewindRafId !== null) {
+      window.cancelAnimationFrame(rewindRafId);
+      rewindRafId = null;
+    }
+
+    const startY = window.scrollY || window.pageYOffset || 0;
+    if (startY <= 0) return;
+
+    const durationMs = Math.min(700, Math.max(320, startY * 0.22));
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / durationMs, 1);
+      // Accelerates upward so it feels like a quick rewind.
+      const eased = progress * progress * progress;
+      const nextY = Math.max(0, startY * (1 - eased));
+      window.scrollTo(0, nextY);
+
+      if (progress < 1) {
+        rewindRafId = window.requestAnimationFrame(step);
+      } else {
+        rewindRafId = null;
+        window.scrollTo(0, 0);
+      }
+    }
+
+    rewindRafId = window.requestAnimationFrame(step);
+  }
+
+  backLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    animateRewindToTop();
+  });
+})();
+
+(function setupSideTocActiveState() {
+  const toc = document.querySelector('.side-toc');
+  const tocLinks = Array.from(document.querySelectorAll('.side-toc .toc-link'));
+  if (!toc || !tocLinks.length) return;
+
+  const purpleRegions = Array.from(document.querySelectorAll('.band, .other-records-section'));
+  const linksById = new Map();
+  const sections = [];
+
+  tocLinks.forEach((link) => {
+    const targetId = link.getAttribute('href')?.replace('#', '');
+    if (!targetId) return;
+    const section = document.getElementById(targetId);
+    if (!section) return;
+    linksById.set(targetId, link);
+    sections.push(section);
+  });
+
+  if (!sections.length) return;
+
+  function setActiveLink(activeId) {
+    tocLinks.forEach((link) => link.classList.remove('active'));
+    const activeLink = linksById.get(activeId);
+    if (activeLink) activeLink.classList.add('active');
+  }
+
+  function updateTocContrast() {
+    let hasPurpleOverlap = false;
+    tocLinks.forEach((link) => {
+      const rect = link.getBoundingClientRect();
+      const x = rect.left + 4;
+      const y = rect.top + rect.height / 2;
+      const overlapsPurple = purpleRegions.some((region) => {
+        const regionRect = region.getBoundingClientRect();
+        return x >= regionRect.left && x <= regionRect.right && y >= regionRect.top && y <= regionRect.bottom;
+      });
+      if (overlapsPurple) hasPurpleOverlap = true;
+      link.classList.toggle('on-purple', overlapsPurple);
+    });
+    toc.classList.toggle('on-purple', hasPurpleOverlap);
+  }
+
+  let contrastRafId = null;
+  function requestContrastUpdate() {
+    if (contrastRafId !== null) return;
+    contrastRafId = window.requestAnimationFrame(() => {
+      contrastRafId = null;
+      updateTocContrast();
+    });
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveLink(entry.target.id);
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: '-22% 0px -70% 0px',
+      threshold: 0
+    }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+  setActiveLink(sections[0].id);
+  updateTocContrast();
+  window.addEventListener('scroll', requestContrastUpdate, { passive: true });
+  window.addEventListener('resize', requestContrastUpdate);
+})();

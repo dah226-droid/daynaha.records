@@ -111,6 +111,17 @@ html {
   gap: clamp(12px, 1.2vw, 16px);
 }
 
+.side-toc::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.14);
+  z-index: 0;
+}
+
 .toc-link {
   position: relative;
   padding-left: 20px;
@@ -135,21 +146,11 @@ html {
   border-radius: 50%;
   transform: translateY(-50%);
   background: #ffffff;
-  z-index: 2;
 }
 
-.toc-link::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: calc(50% + 4px);
-  width: 1px;
-  height: calc(100% + clamp(12px, 1.2vw, 16px) - 8px);
-  background: rgba(0, 0, 0, 0.14);
-  z-index: 0;
-}
-
-.toc-link:last-child::after {
+.toc-link::after,
+.toc-link:last-child::after,
+.toc-link.on-purple::after {
   display: none;
 }
 
@@ -170,10 +171,10 @@ html {
 
 .toc-link.on-purple::before {
   border-color: rgba(255, 255, 255, 0.52);
-  background: rgba(255, 255, 255, 0.16);
+  background: #a276a6;
 }
 
-.toc-link.on-purple::after {
+.side-toc.on-purple::before {
   background: rgba(255, 255, 255, 0.26);
 }
 
@@ -188,7 +189,13 @@ html {
   background: #d8c6da;
 }
 
-.luag-page section[id] {
+#introduction,
+#overview,
+#problem,
+#research,
+#process,
+#final-deliverable,
+#key-takeaways {
   scroll-margin-top: calc(var(--top-nav-slot) + 16px);
 }
 

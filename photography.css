@@ -30,6 +30,10 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .luag-page {
   width: 100%;
   max-width: 100%;
@@ -95,6 +99,104 @@ body {
   color: #000000;
   font-size: clamp(10px, 1vw, 16px);
   letter-spacing: 0.12em;
+}
+
+.side-toc {
+  position: fixed;
+  top: calc(var(--page-pad-top) + clamp(52px, 8vw, 100px) + clamp(20px, 2.2vw, 28px));
+  left: clamp(50px, 5vw, 100px);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.2vw, 16px);
+}
+
+.side-toc::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.14);
+  z-index: 0;
+}
+
+.toc-link {
+  position: relative;
+  padding-left: 20px;
+  color: rgba(0, 0, 0, 0.38);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(10px, 0.75vw, 12px);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: none;
+  transition: color 150ms ease;
+  z-index: 1;
+}
+
+.toc-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.28);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: #ffffff;
+}
+
+.toc-link::after,
+.toc-link:last-child::after,
+.toc-link.on-purple::after {
+  display: none;
+}
+
+.toc-link.active,
+.toc-link:hover {
+  color: var(--purple);
+}
+
+.toc-link.active::before,
+.toc-link:hover::before {
+  border-color: #b07bb4;
+  background: #dec4e0;
+}
+
+.toc-link.on-purple {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.toc-link.on-purple::before {
+  border-color: rgba(255, 255, 255, 0.52);
+  background: #a276a6;
+}
+
+.side-toc.on-purple::before {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.toc-link.on-purple.active,
+.toc-link.on-purple:hover {
+  color: #ffffff;
+}
+
+.toc-link.on-purple.active::before,
+.toc-link.on-purple:hover::before {
+  border-color: #ffffff;
+  background: #d8c6da;
+}
+
+#introduction,
+#overview,
+#problem,
+#research,
+#process,
+#final-deliverable,
+#key-takeaways {
+  scroll-margin-top: calc(var(--top-nav-slot) + 16px);
 }
 
 .project-hero {
@@ -515,6 +617,10 @@ h2 {
 }
 
 @media (max-width: 860px) {
+  .side-toc {
+    display: none;
+  }
+
   .overview-grid,
   .flavor-grid,
   .other-records-grid {
