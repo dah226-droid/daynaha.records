@@ -1,13 +1,13 @@
-const luagLogoImage = document.querySelector('.top-nav .dot-logo img');
+const magLogoImage = document.querySelector('.top-nav .dot-logo img');
 
-if (luagLogoImage) {
+if (magLogoImage) {
   let rafId = null;
 
   function updateLogoSpinFromScroll() {
     rafId = null;
     const scrollY = window.scrollY || window.pageYOffset || 0;
     const spinDegrees = scrollY * 0.35;
-    luagLogoImage.style.transform = `rotate(${spinDegrees}deg)`;
+    magLogoImage.style.transform = `rotate(${spinDegrees}deg)`;
   }
 
   function requestLogoSpinUpdate() {
@@ -32,13 +32,13 @@ function shuffleInPlace(array) {
   const grid = document.querySelector('.other-records-grid[data-random-records="true"]');
   if (!grid) return;
 
-  // Side A carousel options (exclude LUAG: carousel-vinyl-02).
+  // Side A carousel options (exclude Tripage: carousel-vinyl-08).
   const candidates = [
+    { src: 'assets/carousel-vinyl-02.png', alt: 'LUAG project record card', href: 'luag.html' },
     { src: 'assets/carousel-vinyl-05.png', alt: 'Umami Lab project record card', href: 'umami.html' },
     { src: 'assets/carousel-vinyl-01.png', alt: 'VYBE project record card', href: 'vybe.html' },
-    { src: 'assets/carousel-vinyl-08.png', alt: 'Tricoard project record card', href: 'tripage.html' },
-    { src: 'assets/carousel-vinyl-06.png', alt: 'Board project record card', href: 'board.html' },
-    { src: 'assets/carousel-vinyl-07.png', alt: 'Mag project record card', href: 'mag.html' }
+    { src: 'assets/carousel-vinyl-07.png', alt: 'Mag project record card', href: 'mag.html' },
+    { src: 'assets/carousel-vinyl-06.png', alt: 'Board project record card', href: 'board.html' }
   ];
 
   const picked = shuffleInPlace(candidates.slice()).slice(0, 3);

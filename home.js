@@ -4,7 +4,7 @@ const badgeContainer = document.querySelector('.role-badges');
 const badgeItems = Array.from(document.querySelectorAll('.role-badges span'));
 
 let syncWorkNavFromProjects = () => {};
-let hasPendingWorkHashNavigation = ['#projects', '#work'].includes((location.hash || '').toLowerCase());
+let hasPendingWorkHashNavigation = ['#projects', '#work', '#side-b'].includes((location.hash || '').toLowerCase());
 
 function scrollPortfolioToWorkHighlight() {
   if (!homeRoot) return;
@@ -24,12 +24,34 @@ function scrollPortfolioToWorkHighlight() {
   syncWorkNavFromProjects();
 }
 
+function scrollPortfolioToSideBHighlight() {
+  if (!homeRoot) return;
+  if (typeof window.__homeCompleteIntroForProjects === 'function') {
+    window.__homeCompleteIntroForProjects();
+  }
+  const topNav = document.querySelector('.top-nav');
+  const sideBBar = document.querySelector('.side-b-bar');
+  if (!topNav || !sideBBar) return;
+
+  const navBottom = topNav.getBoundingClientRect().bottom;
+  const sideBTop = sideBBar.getBoundingClientRect().top;
+  const maxScroll = Math.max(0, homeRoot.scrollHeight - homeRoot.clientHeight);
+  const deltaToTrigger = sideBTop - navBottom;
+  const targetScrollTop = Math.min(maxScroll, Math.max(0, homeRoot.scrollTop + deltaToTrigger));
+  homeRoot.scrollTop = targetScrollTop;
+  syncWorkNavFromProjects();
+}
+
 function applyWorkHashFromUrl() {
   const h = (location.hash || '').toLowerCase();
-  if (h !== '#projects' && h !== '#work') return;
+  if (h !== '#projects' && h !== '#work' && h !== '#side-b') return;
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      scrollPortfolioToWorkHighlight();
+      if (h === '#side-b') {
+        scrollPortfolioToSideBHighlight();
+      } else {
+        scrollPortfolioToWorkHighlight();
+      }
       hasPendingWorkHashNavigation = false;
     });
   });
@@ -146,14 +168,14 @@ if (homeRoot && heroAsset && badgeContainer && badgeItems.length) {
   const topNav = document.querySelector('.top-nav');
   const sideBar = document.querySelector('.side-a-bar');
   if (!homeRoot || !workLink || !topNav || !sideBar) return;
-  let wasPurple = ['#projects', '#work'].includes((location.hash || '').toLowerCase());
+  let wasPurple = ['#projects', '#work', '#side-b'].includes((location.hash || '').toLowerCase());
   let lastScrollTop = homeRoot.scrollTop;
 
   syncWorkNavFromProjects = function updateWorkNavFromProjects() {
     const navBottom = topNav.getBoundingClientRect().bottom;
     const sideBarTop = sideBar.getBoundingClientRect().top;
     const sideBarAtTrigger = sideBarTop <= navBottom;
-    const isWorkHash = ['#projects', '#work'].includes((location.hash || '').toLowerCase());
+    const isWorkHash = ['#projects', '#work', '#side-b'].includes((location.hash || '').toLowerCase());
     const backAtTop = homeRoot.scrollTop <= 2;
 
     if (backAtTop) {

@@ -35,10 +35,10 @@ function shuffleInPlace(array) {
   // Side A carousel options (exclude Umami: carousel-vinyl-05).
   const candidates = [
     { src: 'assets/carousel-vinyl-02.png', alt: 'LUAG project record card', href: 'luag.html' },
-    { src: 'assets/carousel-vinyl-01.png', alt: 'VYBE project record card', href: 'index.html#projects' },
-    { src: 'assets/carousel-vinyl-08.png', alt: 'Tricoard project record card', href: 'index.html#projects' },
-    { src: 'assets/carousel-vinyl-06.png', alt: 'Last Call project record card', href: 'index.html#projects' },
-    { src: 'assets/carousel-vinyl-07.png', alt: 'Nabi project record card', href: 'index.html#projects' }
+    { src: 'assets/carousel-vinyl-01.png', alt: 'VYBE project record card', href: 'vybe.html' },
+    { src: 'assets/carousel-vinyl-08.png', alt: 'Tricoard project record card', href: 'tripage.html' },
+    { src: 'assets/carousel-vinyl-06.png', alt: 'Board project record card', href: 'board.html' },
+    { src: 'assets/carousel-vinyl-07.png', alt: 'Mag project record card', href: 'mag.html' }
   ];
 
   const picked = shuffleInPlace(candidates.slice()).slice(0, 3);
