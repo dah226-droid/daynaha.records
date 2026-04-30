@@ -68,6 +68,40 @@
   cursor: pointer;
 }
 
+.image-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+  font-family: Inter, sans-serif;
+  font-size: 34px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.image-lightbox-nav-prev {
+  left: 12px;
+}
+
+.image-lightbox-nav-next {
+  right: 12px;
+}
+
+.image-lightbox.has-carousel .image-lightbox-nav {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .image-lightbox-controls {
   display: inline-flex;
   align-items: center;

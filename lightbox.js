@@ -27,6 +27,18 @@
   image.className = "image-lightbox-image";
   image.alt = "";
 
+  const previousButton = document.createElement("button");
+  previousButton.type = "button";
+  previousButton.className = "image-lightbox-nav image-lightbox-nav-prev";
+  previousButton.setAttribute("aria-label", "Previous image");
+  previousButton.textContent = "‹";
+
+  const nextButton = document.createElement("button");
+  nextButton.type = "button";
+  nextButton.className = "image-lightbox-nav image-lightbox-nav-next";
+  nextButton.setAttribute("aria-label", "Next image");
+  nextButton.textContent = "›";
+
   const controls = document.createElement("div");
   controls.className = "image-lightbox-controls";
 
@@ -47,7 +59,7 @@
   hint.textContent = "Scroll to zoom";
 
   controls.append(zoomOutButton, hint, zoomInButton);
-  media.append(image, closeButton);
+  media.append(image, closeButton, previousButton, nextButton);
   stage.append(media, controls);
   overlay.appendChild(stage);
   document.body.appendChild(overlay);
@@ -58,10 +70,23 @@
   const MAX_SCALE = 4;
   const SCALE_STEP = 0.2;
   let previousBodyOverflow = "";
+  let currentGroup = [];
+  let currentIndex = 0;
 
   function applyScale() {
     image.style.transform = `scale(${currentScale})`;
     image.style.cursor = currentScale > 1 ? "zoom-out" : "zoom-in";
+  }
+
+  function setTransformOriginFromPoint(clientX, clientY) {
+    const rect = image.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    const clampedX = Math.max(0, Math.min(100, x));
+    const clampedY = Math.max(0, Math.min(100, y));
+    image.style.transformOrigin = `${clampedX}% ${clampedY}%`;
   }
 
   function setScale(nextScale) {
@@ -69,10 +94,25 @@
     applyScale();
   }
 
-  function openLightbox(sourceImage) {
+  function setDisplayedImage(sourceImage) {
     image.src = sourceImage.currentSrc || sourceImage.src;
     image.alt = sourceImage.alt || "Expanded project image";
+    image.style.transformOrigin = "50% 50%";
     setScale(1);
+  }
+
+  function updateNavigationState() {
+    const hasCarousel = currentGroup.length > 1;
+    overlay.classList.toggle("has-carousel", hasCarousel);
+    previousButton.disabled = !hasCarousel;
+    nextButton.disabled = !hasCarousel;
+  }
+
+  function openLightbox(sourceImage, group = [sourceImage], startIndex = 0) {
+    currentGroup = group;
+    currentIndex = Math.max(0, Math.min(group.length - 1, startIndex));
+    setDisplayedImage(currentGroup[currentIndex]);
+    updateNavigationState();
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
     previousBodyOverflow = document.body.style.overflow;
@@ -80,27 +120,59 @@
     isOpen = true;
   }
 
+  function showRelativeImage(step) {
+    if (currentGroup.length < 2) return;
+    currentIndex = (currentIndex + step + currentGroup.length) % currentGroup.length;
+    setDisplayedImage(currentGroup[currentIndex]);
+  }
+
   function closeLightbox() {
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = previousBodyOverflow;
     isOpen = false;
+    currentGroup = [];
+    currentIndex = 0;
   }
 
   clickableImages.forEach((img) => {
     img.style.cursor = "zoom-in";
-    img.addEventListener("click", () => openLightbox(img));
+    img.addEventListener("click", () => {
+      const flavorGrid = img.closest(".flavor-grid");
+      if (!flavorGrid) {
+        openLightbox(img);
+        return;
+      }
+      const flavorImages = Array.from(flavorGrid.querySelectorAll("img"));
+      const startIndex = Math.max(0, flavorImages.indexOf(img));
+      openLightbox(img, flavorImages, startIndex);
+    });
   });
 
   closeButton.addEventListener("click", closeLightbox);
+  previousButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    showRelativeImage(-1);
+  });
+  nextButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    showRelativeImage(1);
+  });
   overlay.addEventListener("click", (event) => {
     if (event.target === overlay) {
       closeLightbox();
     }
   });
 
+  media.addEventListener("click", (event) => {
+    if (event.target === media) {
+      closeLightbox();
+    }
+  });
+
   image.addEventListener("click", (event) => {
     event.stopPropagation();
+    setTransformOriginFromPoint(event.clientX, event.clientY);
     if (currentScale > 1) {
       setScale(1);
       return;
@@ -125,6 +197,7 @@
         return;
       }
       event.preventDefault();
+      setTransformOriginFromPoint(event.clientX, event.clientY);
       const direction = event.deltaY < 0 ? SCALE_STEP : -SCALE_STEP;
       setScale(currentScale + direction);
     },
@@ -148,6 +221,16 @@
 
     if (event.key === "-") {
       setScale(currentScale - SCALE_STEP);
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      showRelativeImage(-1);
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      showRelativeImage(1);
     }
   });
 })();

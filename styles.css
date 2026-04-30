@@ -252,8 +252,68 @@ body {
   transform: translate(-50%, -50%);
   transform-origin: center center;
   animation: heroDiscSpin 5s linear infinite;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
   z-index: 3;
+}
+
+.hero-disc-overlay:focus-visible {
+  outline: 3px solid rgba(135, 73, 139, 0.55);
+  outline-offset: 2px;
+}
+
+.hero-disc-overlay.is-paused {
+  animation-play-state: paused;
+}
+
+.hero-disc-overlay.is-dragging {
+  cursor: grabbing;
+}
+
+.hero-disc-hint {
+  position: absolute;
+  top: calc(50% - 142px);
+  left: calc(50% - min(50%, 500px) - 2px);
+  transform: translateY(-50%) translateX(9px);
+  color: #ffffff;
+  background: var(--purple);
+  border-radius: 14px;
+  width: 170px;
+  min-height: 32px;
+  padding: 8px 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  text-align: center;
+  white-space: normal;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.hero-disc-hint::before {
+  content: "";
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: translateY(-50%);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 10px solid var(--purple);
+}
+
+.hero-disc-overlay:hover + .hero-disc-hint,
+.hero-disc-overlay:focus-visible + .hero-disc-hint,
+.hero-disc-overlay.is-dragging + .hero-disc-hint {
+  opacity: 1;
+  transform: translateY(-50%) translateX(1px);
 }
 
 @keyframes heroDiscSpin {

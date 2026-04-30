@@ -286,3 +286,62 @@ applyWorkHashFromUrl();
     });
   });
 })();
+
+(function setupHeroDiscInteraction() {
+  const heroDisc = document.querySelector('.hero-disc-overlay');
+  if (!heroDisc) return;
+  heroDisc.setAttribute('draggable', 'false');
+  heroDisc.setAttribute('tabindex', '0');
+
+  let isDragging = false;
+  let pointerStartX = 0;
+  let pointerStartY = 0;
+  let hasDragged = false;
+
+  function pauseDisc() {
+    heroDisc.classList.add('is-paused');
+  }
+
+  function resumeDisc() {
+    heroDisc.classList.remove('is-paused');
+  }
+
+  heroDisc.addEventListener('click', () => {
+    if (hasDragged) return;
+    pauseDisc();
+  });
+
+  heroDisc.addEventListener('pointerdown', (event) => {
+    isDragging = true;
+    hasDragged = false;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
+    heroDisc.classList.add('is-dragging');
+    heroDisc.setPointerCapture(event.pointerId);
+  });
+
+  heroDisc.addEventListener('pointermove', (event) => {
+    if (!isDragging) return;
+    const deltaX = event.clientX - pointerStartX;
+    const deltaY = event.clientY - pointerStartY;
+    const movedEnough = Math.hypot(deltaX, deltaY) > 6;
+    if (!movedEnough) return;
+    hasDragged = true;
+    resumeDisc();
+  });
+
+  function stopDragging(event) {
+    if (!isDragging) return;
+    isDragging = false;
+    heroDisc.classList.remove('is-dragging');
+    if (heroDisc.hasPointerCapture(event.pointerId)) {
+      heroDisc.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  heroDisc.addEventListener('pointerup', stopDragging);
+  heroDisc.addEventListener('pointercancel', stopDragging);
+  heroDisc.addEventListener('dragstart', (event) => {
+    event.preventDefault();
+  });
+})();
