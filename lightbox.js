@@ -1,6 +1,9 @@
 (() => {
   const clickableImages = Array.from(document.querySelectorAll("main img")).filter((img) => {
-    return !img.closest(".dot-logo, .other-record-link") && !img.classList.contains("project-hero-image");
+    return (
+      !img.closest(".dot-logo, .other-record-link, .flavor-folder") &&
+      !img.classList.contains("project-hero-image")
+    );
   });
 
   if (!clickableImages.length) {

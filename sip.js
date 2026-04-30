@@ -53,6 +53,66 @@ function shuffleInPlace(array) {
     .join('');
 })();
 
+(function setupFlavorCarousel() {
+  const carousel = document.querySelector('.flavor-carousel');
+  if (!carousel) return;
+
+  const viewport = carousel.querySelector('.flavor-carousel-viewport');
+  const leftArrow = carousel.querySelector('.flavor-carousel-arrow--left');
+  const rightArrow = carousel.querySelector('.flavor-carousel-arrow--right');
+  if (!viewport || !leftArrow || !rightArrow) return;
+
+  function getSlideStep() {
+    const slide = viewport.querySelector('.flavor-carousel-slide');
+    if (!slide) return viewport.clientWidth * 0.8;
+    const slideWidth = slide.getBoundingClientRect().width;
+    const styles = window.getComputedStyle(viewport.querySelector('.flavor-carousel-track'));
+    const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+    return Math.max(140, slideWidth + gap);
+  }
+
+  function nudgeCarousel(direction) {
+    const step = getSlideStep();
+    viewport.scrollBy({
+      left: direction * step,
+      behavior: 'smooth'
+    });
+  }
+
+  function syncArrowVisibility() {
+    const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const atStart = viewport.scrollLeft <= 2;
+    const atEnd = viewport.scrollLeft >= maxScrollLeft - 2;
+
+    leftArrow.classList.toggle('is-hidden', atStart || maxScrollLeft <= 2);
+    rightArrow.classList.toggle('is-hidden', atEnd || maxScrollLeft <= 2);
+  }
+
+  leftArrow.addEventListener('click', () => nudgeCarousel(-1));
+  rightArrow.addEventListener('click', () => nudgeCarousel(1));
+  viewport.addEventListener('scroll', syncArrowVisibility, { passive: true });
+  window.addEventListener('resize', syncArrowVisibility);
+  syncArrowVisibility();
+})();
+
+(function setupFlavorFolderDismiss() {
+  const folder = document.querySelector('.flavor-folder');
+  if (!folder) return;
+  const backdrop = folder.querySelector('.flavor-folder-backdrop');
+  const closeButton = folder.querySelector('.flavor-folder-close');
+  if (!backdrop) return;
+
+  backdrop.addEventListener('click', () => {
+    folder.open = false;
+  });
+
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      folder.open = false;
+    });
+  }
+})();
+
 function getOtherRecordsStopScrollY() {
   const section = document.querySelector('.other-records-section');
   if (!section) return null;
